@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>USER LIST</title>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="style.css">
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Changa&display=swap');
+
+    body {
+      background: linear-gradient(135deg, #e3baf5 60%, cyan) !important;
+      font-family: Changa !important;
+    }
+
+    .card-img-top {
+      border-radius: 10px !important;
+    }
+
+    .btn {
+      background: #8ddde3 !important;
+      border-color: #8ddde3 !important;
+      border-radius: 50px !important;
+    }
+
+    #user-body {
+      background: #badbb2;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Optional JavaScript -->
+  <!-- navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="./index.html">User List</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <a class="nav-link" href="./index.html">Home
+            <span class="sr-only">(current)</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="./index.html">favorite</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+  <!-- data-panel -->
+  <div class="container mt-5">
+    <div class="row d-flex justify-content-center flex-wrap" id="data-panel">
+      <!-- print User list here -->
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal fade" id="user-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="user-title">Modal title</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">X</span>
+          </button>
+        </div>
+        <div class="modal-body" id="user-body">
+          <div class="row">
+            <div class="col-sm-6" id="user-avatar">
+            </div>
+            <div class="col-sm-6">
+              <p id="user-gender"></p>
+              <p id="user-birthday"></p>
+              <p id="user-age"></p>
+              <p id="user-region"></p>
+              <p id="user-email"></p>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+    crossorigin="anonymous"></script>
+  <script>
+    const BASE_URL = 'https://lighthouse-user-api.herokuapp.com'
+    const INDEX_URL = BASE_URL + '/api/v1/users/'
+    // const AVATAR_URL = 'https://randomuser.me/api/portraits/men/'
+    const data = []
+    const dataPanel = document.getElementById('data-panel')
+    // const btn = document.getElementsByClassName('.btn')
+
+    axios.get(INDEX_URL).then((response) => {
+      data.push(...response.data.results)
+      displayUserList()
+
+      dataPanel.addEventListener('click', function () {
+        if (event.target.matches('.btn')) {
+          console.log(event.target.dataset.id)
+          showUser(event.target.dataset.id)
+        }
+      })
+    }).catch((err) => { console.log(err) })
+
+
+    function showUser(id) {
+      const modalName = document.getElementById('user-title')
+      const modalAvatar = document.getElementById('user-avatar')
+      const modalBirthday = document.getElementById('user-birthday')
+      const modalAge = document.getElementById('user-age')
+      const modalGender = document.getElementById('user-gender')
+      const modalRegion = document.getElementById('user-region')
+      const modalEmail = document.getElementById('user-email')
+      // set request url
+      const url = INDEX_URL + id
+      // send request to show api
+      axios.get(url).then((response) => {
+        const data = response.data
+        // insert data into modal ui
+        modalName.textContent = `${data.name} ${data.surname}`
+        modalAvatar.innerHTML = `<img src="${data.avatar}" class="img-fluid" alt="Responsive image">`
+        modalBirthday.textContent = `Birthday: ${data.birthday}`
+        modalAge.textContent = `Age: ${data.age}`
+        modalGender.textContent = `Gender: ${data.gender}`
+        modalRegion.textContent = `Region: ${data.region}`
+        modalEmail.textContent = `Email: ${data.email}`
+      }).catch((err) => { console.log(err) })
+    }
+
+    function displayUserList() {
+      let htmlContent = ''
+      data.forEach(function (user, index) {
+        htmlContent += `
+        <div class="col-sm-auto mb-2">
+          <div class="card md-auto">
+           <div class="card border-white" style="width: 160px">
+            <img class="card-img-top rounded mw-100 " data-id="${user.id}"  src="${user.avatar}" alt="Card image cap">
+            <div class="card-body user-item-body">
+            <h5 class="card-title">${user.name} ${user.surname}</h5>
+            <button class="btn btn-primary btn-show-user" data-toggle="modal" data-target="#user-modal" data-id="${user.id}">Say Hi 👋🏻</button>
+            </div>
+            </div>
+          </div>
+        </div>
+      `
+      })
+      dataPanel.innerHTML = htmlContent
+    }
+  </script>
+</body>
+
+</html>
