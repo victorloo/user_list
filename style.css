@@ -1,0 +1,19 @@
+@import url('https://fonts.googleapis.com/css2?family=Changa&display=swap');
+body {
+  background: linear-gradient(135deg, #e3baf5 60%, cyan) !important;
+  font-family: Changa !important;
+}
+
+.card-img-top {
+  border-radius: 10px !important;
+}
+
+.btn {
+  background: #8ddde3 !important;
+  border-color: #8ddde3 !important;
+  border-radius: 50px !important;
+}
+
+#user-body {
+  background: #badbb2;
+}
